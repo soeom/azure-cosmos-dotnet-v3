@@ -13,18 +13,28 @@ namespace Microsoft.Azure.Cosmos.Performance.Tests.Benchmarks
     {
         private static readonly string NonMultimasterSessionToken = "1#49252";
         private static readonly string NonMultimasterSessionToken2 = "1#99252";
-        private readonly ISessionToken token1;
-        private readonly ISessionToken token2;
+        private readonly ISessionToken vectorToken1;
+        private readonly ISessionToken vectorToken2;
+        private readonly ISessionToken oldVectorToken1;
+        private readonly ISessionToken oldVectorToken2;
 
         public VectorTokenBenchmark()
         {
             VectorSessionToken.TryCreate(
                 VectorTokenBenchmark.NonMultimasterSessionToken,
-                out this.token1);
+                out this.vectorToken1);
 
             VectorSessionToken.TryCreate(
-                NonMultimasterSessionToken,
-                out this.token2);
+                VectorTokenBenchmark.NonMultimasterSessionToken2,
+                out this.vectorToken2);
+
+            VectorSessionTokenOld.TryCreate(
+                VectorTokenBenchmark.NonMultimasterSessionToken,
+                out this.oldVectorToken1);
+
+            VectorSessionTokenOld.TryCreate(
+                VectorTokenBenchmark.NonMultimasterSessionToken2,
+                out this.oldVectorToken2);
         }
 
         [Benchmark]
@@ -38,8 +48,26 @@ namespace Microsoft.Azure.Cosmos.Performance.Tests.Benchmarks
         [Benchmark]
         public void VectorTokenMerge()
         {
-            ISessionToken mergedToken = this.token1.Merge(this.token2);
+            ISessionToken mergedToken = this.vectorToken1.Merge(this.vectorToken2);
             if(mergedToken == null)
+            {
+                throw new Exception("Merged token is null");
+            }
+        }
+
+        [Benchmark]
+        public void VectorTokenParseOld()
+        {
+            VectorSessionTokenOld.TryCreate(
+                NonMultimasterSessionToken,
+                out ISessionToken sessionToken);
+        }
+
+        [Benchmark]
+        public void VectorTokenMergeOld()
+        {
+            ISessionToken mergedToken = this.oldVectorToken1.Merge(this.oldVectorToken2);
+            if (mergedToken == null)
             {
                 throw new Exception("Merged token is null");
             }
