@@ -154,14 +154,10 @@ namespace Microsoft.Azure.Cosmos.Common
                 {
                     if (self.collectionNameByResourceId.ContainsKey(collectionName))
                     {
-                        string ignoreString;
-                        ulong ignoreUlong;
-
                         ulong rid = self.collectionNameByResourceId[collectionName];
-                        ConcurrentDictionary<string, ISessionToken> ignored;
-                        self.sessionTokensRIDBased.TryRemove(rid, out ignored);
-                        self.collectionResourceIdByName.TryRemove(rid, out ignoreString);
-                        self.collectionNameByResourceId.TryRemove(collectionName, out ignoreUlong);
+                        self.sessionTokensRIDBased.TryRemove(rid, out _);
+                        self.collectionResourceIdByName.TryRemove(rid, out _);
+                        self.collectionNameByResourceId.TryRemove(collectionName, out _);
                     }
                 }
                 finally
@@ -283,17 +279,14 @@ namespace Microsoft.Azure.Cosmos.Common
         {
             string partitionKeyRangeId;
             ISessionToken token;
-            if (VersionUtility.IsLaterThan(HttpConstants.Versions.CurrentVersion, HttpConstants.Versions.v2015_12_16))
+
+            string[] tokenParts = encodedToken.Split(':');
+            partitionKeyRangeId = tokenParts[0];
+            if (string.IsNullOrEmpty(tokenParts[1]) ||
+                !VectorSessionToken.TryCreate(tokenParts[1], out token))
             {
-                string[] tokenParts = encodedToken.Split(':');
-                partitionKeyRangeId = tokenParts[0];
-                token = SessionTokenHelper.Parse(tokenParts[1], HttpConstants.Versions.CurrentVersion);
-            }
-            else
-            {
-                //todo: elasticcollections remove after first upgrade.
-                partitionKeyRangeId = "0";
-                token = SessionTokenHelper.Parse(encodedToken, HttpConstants.Versions.CurrentVersion);
+                DefaultTrace.TraceCritical("Unable to parse session token {0} for version {1}", encodedToken, HttpConstants.Versions.CurrentVersion);
+                throw new InternalServerErrorException(string.Format(CultureInfo.InvariantCulture, RMResources.InvalidSessionToken, encodedToken));
             }
 
             DefaultTrace.TraceVerbose("Update Session token {0} {1} {2}", resourceId.UniqueDocumentCollectionId, collectionName, token);
@@ -507,28 +500,39 @@ namespace Microsoft.Azure.Cosmos.Common
 
             public override bool Equals(object obj)
             {
-                if (obj == null || GetType() != obj.GetType())
+                if (obj == null || !(obj is SessionContainerSnapshot sibling))
                 {
                     return false;
                 }
 
-                SessionContainerSnapshot sibling = (SessionContainerSnapshot)obj;
+                if(this.collectionNameByResourceId.Count != sibling.collectionNameByResourceId.Count
+                    || this.collectionResourceIdByName.Count != sibling.collectionResourceIdByName.Count
+                    || this.sessionTokensRIDBased.Count != sibling.sessionTokensRIDBased.Count)
+                {
+                    return false;
+                }
 
-                if (!AreDictionariesEqual(collectionNameByResourceId, sibling.collectionNameByResourceId, (x, y) => x == y)) return false;
-                if (!AreDictionariesEqual(collectionResourceIdByName, sibling.collectionResourceIdByName, (x, y) => x == y)) return false;
-                if (!AreDictionariesEqual(sessionTokensRIDBased, sibling.sessionTokensRIDBased, (x, y) => AreDictionariesEqual(x, y, (a, b) => a.Equals(b)))) return false;
+                if (!AreDictionariesEqual(this.collectionNameByResourceId, sibling.collectionNameByResourceId, (x, y) => x == y)) return false;
+                if (!AreDictionariesEqual(this.collectionResourceIdByName, sibling.collectionResourceIdByName, (x, y) => x == y)) return false;
+                if (!AreDictionariesEqual(this.sessionTokensRIDBased, sibling.sessionTokensRIDBased, (x, y) => AreDictionariesEqual(x, y, (a, b) => a.Equals(b)))) return false;
 
                 return true;
             }
 
             private static bool AreDictionariesEqual<T, U>(Dictionary<T, U> left, Dictionary<T, U> right, Func<U, U, bool> areEqual)
             {
-                if (left.Count != right.Count) return false;
-
-                foreach (T key in left.Keys)
+                if (left.Count != right.Count)
                 {
-                    if (!right.ContainsKey(key)) return false;
-                    if (!areEqual(left[key], right[key])) return false;
+                    return false;
+                }
+
+                foreach (KeyValuePair<T,U> keyValuePair in left)
+                {
+                    if(!right.TryGetValue(keyValuePair.Key, out U valueFromLeft)
+                        || !areEqual(keyValuePair.Value, valueFromLeft))
+                    {
+                        return false;
+                    }
                 }
 
                 return true;
