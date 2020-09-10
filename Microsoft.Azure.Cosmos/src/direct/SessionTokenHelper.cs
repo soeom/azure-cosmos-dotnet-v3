@@ -214,5 +214,32 @@ namespace Microsoft.Azure.Documents
                 return false;
             }
         }
+
+        internal static ISessionToken Parse(string sessionToken, string version)
+        {
+            if (!string.IsNullOrEmpty(sessionToken))
+            {
+                string[] sessionTokenSegments = sessionToken.Split(SessionTokenHelper.ColonSeperatorArray);
+
+                ISessionToken parsedSessionToken;
+                if (VersionUtility.IsLaterThan(version, HttpConstants.VersionDates.v2018_06_18))
+                {
+                    if (VectorSessionToken.TryCreate(sessionTokenSegments.Last(), out parsedSessionToken))
+                    {
+                        return parsedSessionToken;
+                    }
+                }
+                else
+                {
+                    if (SimpleSessionToken.TryCreate(sessionTokenSegments.Last(), out parsedSessionToken))
+                    {
+                        return parsedSessionToken;
+                    }
+                }
+            }
+
+            DefaultTrace.TraceCritical("Unable to parse session token {0} for version {1}", sessionToken, version);
+            throw new InternalServerErrorException(string.Format(CultureInfo.InvariantCulture, RMResources.InvalidSessionToken, sessionToken));
+        }
     }
 }

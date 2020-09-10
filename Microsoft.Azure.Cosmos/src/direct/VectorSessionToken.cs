@@ -8,7 +8,6 @@ namespace Microsoft.Azure.Documents
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Microsoft.Azure.Cosmos.ChangeFeed;
     using Microsoft.Azure.Cosmos.Core.Trace;
 
     /// <summary>
@@ -196,6 +195,20 @@ namespace Microsoft.Azure.Documents
             if (object.ReferenceEquals(sessionTokenWithHigherVersion.localLsnByRegion, VectorSessionToken.DefaultLocalLsnByRegion) ||
                 sessionTokenWithHigherVersion.localLsnByRegion.Count == 0)
             {
+                // There is no localLsnByRegion dictionary. If one of the existing tokens
+                // has both the max version and max lsn then just return it instead of
+                // creating a new one.
+                if(this.version >= other.version &&
+                    this.LSN >= other.LSN)
+                {
+                    return this;
+                }
+                else if(other.version >= this.version &&
+                    other.LSN >= this.LSN)
+                {
+                    return other;
+                }
+
                 highestLocalLsnByRegion = VectorSessionToken.DefaultLocalLsnByRegion;
             }
             else
