@@ -53,6 +53,32 @@ namespace Microsoft.Azure.Cosmos.SDK.EmulatorTests
         }
 
         [TestMethod]
+        public async Task GlobalSessionTokenTest()
+        {
+            using CosmosClient cosmosClient = new CosmosClient("https://cosmosdbdotnetperf.documents.azure.com:443/", "UPa76X6ylYJC8yEJP6y8W3ZINKGxDfY42960dKjXU4jYlPauOD0Qt7mIw2LD712rtPx7T8YpnQcWDqaodThu3Q==",
+                new CosmosClientOptions(){
+                    ConnectionMode = ConnectionMode.Gateway,
+                    ConnectionProtocol = Documents.Client.Protocol.Https,
+                });
+
+            Container container = cosmosClient.GetContainer("DiagnosticBenchmark", "GlobalSetupDiagnosticBenchmark");
+
+            for(int i = 0; i < 100; i++)
+            {
+                ToDoActivity toDoActivity = ToDoActivity.CreateRandomToDoActivity();
+                await container.CreateItemAsync<ToDoActivity>(toDoActivity);
+            }
+
+            FeedIterator<ToDoActivity> query = container.GetItemQueryIterator<ToDoActivity>("select * from t where t.description = 'CreateRandomToDoActivity'");
+            while (query.HasMoreResults)
+            {
+                await query.ReadNextAsync();
+            }
+
+            Console.WriteLine("Test");
+        }
+
+        [TestMethod]
         [DataRow(false)]
         [DataRow(true)]
         public async Task DatabaseTest(bool directMode)

@@ -11,8 +11,8 @@ namespace Microsoft.Azure.Cosmos.Performance.Tests.Benchmarks
     [MemoryDiagnoser]
     public class VectorTokenBenchmark
     {
-        private static readonly string NonMultimasterSessionToken = "1#49252";
-        private static readonly string NonMultimasterSessionToken2 = "1#99252";
+        private static readonly string NonMultimasterSessionToken = "0#101#3=-1";
+        private static readonly string NonMultimasterSessionToken2 = "0#121#3=-1";
         private readonly ISessionToken vectorToken1;
         private readonly ISessionToken vectorToken2;
         private readonly ISessionToken oldVectorToken1;
