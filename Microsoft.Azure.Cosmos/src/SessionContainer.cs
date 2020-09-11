@@ -344,22 +344,40 @@ namespace Microsoft.Azure.Cosmos.Common
 
         private static void AddSessionToken(SessionContainerState self, ulong rid, string partitionKeyRangeId, ISessionToken token)
         {
-            self.sessionTokensRIDBased.AddOrUpdate(
-                rid,
-                (ridKey) =>
+            if(!self.sessionTokensRIDBased.TryGetValue(rid, out ConcurrentDictionary<string, ISessionToken> tokens))
+            {
+                tokens = new ConcurrentDictionary<string, ISessionToken>();
+                if(!self.sessionTokensRIDBased.TryAdd(rid, tokens))
                 {
-                    ConcurrentDictionary<string, ISessionToken> tokens = new ConcurrentDictionary<string, ISessionToken>();
-                    tokens[partitionKeyRangeId] = token;
-                    return tokens;
-                },
-                (ridKey, tokens) =>
-                {
-                    tokens.AddOrUpdate(
-                        partitionKeyRangeId,
-                        token,
-                        (existingPartitionKeyRangeId, existingToken) => existingToken.Merge(token));
-                    return tokens;
-                });
+                    // Handle if there was a race condition and a different thread did
+                    // the add after the initial read
+                    if (!self.sessionTokensRIDBased.TryGetValue(rid, out tokens))
+                    {
+                        throw new InternalServerErrorException("AddSessionToken failed to get or add the session token dictionary.");
+                    }
+                }
+            }
+
+            if (tokens.TryGetValue(partitionKeyRangeId, out ISessionToken existingToken))
+            {
+                existingToken.Merge(token);
+                return;
+            }
+
+            if (tokens.TryAdd(partitionKeyRangeId, token))
+            {
+                return;
+            }
+
+            // Handle if there was a race condition and a different thread did
+            // the add after the initial read
+            if (tokens.TryGetValue(partitionKeyRangeId, out existingToken))
+            {
+                existingToken.Merge(token);
+                return;
+            }
+
+            throw new InternalServerErrorException("AddSessionToken failed to get or add the session tokens dictionary.");
         }
 
         private static string GetSessionTokenString(ConcurrentDictionary<string, ISessionToken> partitionKeyRangeIdToTokenMap)
