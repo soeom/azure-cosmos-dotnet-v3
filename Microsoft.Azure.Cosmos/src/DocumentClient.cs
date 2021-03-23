@@ -112,6 +112,8 @@ namespace Microsoft.Azure.Cosmos
 
         // Gateway has backoff/retry logic to hide transient errors.
         private RetryPolicy retryPolicy;
+        public ClientTelemetry clientTelemetry { get; set; }
+
         private bool allowOverrideStrongerConsistency = false;
         private int maxConcurrentConnectionOpenRequests = Environment.ProcessorCount * MaxConcurrentConnectionOpenRequestsPerProcessor;
         private int openConnectionTimeoutInSeconds = 5;
@@ -923,6 +925,13 @@ namespace Microsoft.Azure.Cosmos
                 desiredConsistencyLevel != null ? desiredConsistencyLevel.ToString() : "null"));
 
             this.QueryCompatibilityMode = QueryCompatibilityMode.Default;
+
+            this.clientTelemetry = new ClientTelemetry(false, Guid.NewGuid().ToString(),
+                System.Diagnostics.Process.GetCurrentProcess().ProcessName,
+                this.ConnectionPolicy.UserAgentContainer.UserAgent,
+                this.ConnectionPolicy.ConnectionMode,
+                null,
+                null, null, this.httpClient, connectionPolicy.EnableClientTelemetry);
         }
 
         // Always called from under the lock except when called from Intilialize method during construction.

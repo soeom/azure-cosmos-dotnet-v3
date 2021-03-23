@@ -13,6 +13,7 @@ namespace Microsoft.Azure.Cosmos
     using System.Net.Http;
     using System.Security.AccessControl;
     using Microsoft.Azure.Cosmos.Fluent;
+    using Microsoft.Azure.Cosmos.Handler;
     using Microsoft.Azure.Documents;
     using Microsoft.Azure.Documents.Client;
     using Newtonsoft.Json;
@@ -69,6 +70,8 @@ namespace Microsoft.Azure.Cosmos
         private PortReuseMode? portReuseMode;
         private IWebProxy webProxy;
         private Func<HttpClient> httpClientFactory;
+
+        private bool isTelemetryEnabled = false;
 
         /// <summary>
         /// Creates a new CosmosClientOptions
@@ -630,6 +633,7 @@ namespace Microsoft.Azure.Cosmos
         /// Flag that controls whether CPU monitoring thread is created to enrich timeout exceptions with additional diagnostic. Default value is true.
         /// </summary>
         internal bool? EnableCpuMonitor { get; set; }
+        internal bool IsTelemetryEnabled { get; set; }
 
         internal void SetSerializerIfNotConfigured(CosmosSerializer serializer)
         {
@@ -668,6 +672,7 @@ namespace Microsoft.Azure.Cosmos
                 PortReuseMode = this.portReuseMode,
                 EnableTcpConnectionEndpointRediscovery = this.EnableTcpConnectionEndpointRediscovery,
                 HttpClientFactory = this.httpClientFactory,
+                EnableClientTelemetry = this.isTelemetryEnabled
             };
 
             if (this.ApplicationRegion != null)

@@ -8,6 +8,7 @@ namespace Microsoft.Azure.Cosmos
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using Microsoft.Azure.Cosmos.Handler;
     using Microsoft.Azure.Cosmos.Handlers;
 
     internal class ClientPipelineBuilder
@@ -17,6 +18,8 @@ namespace Microsoft.Azure.Cosmos
         private readonly DiagnosticsHandler diagnosticsHandler;
         private readonly RequestHandler invalidPartitionExceptionRetryHandler;
         private readonly RequestHandler transportHandler;
+        private readonly TelemetryHandler telemetryHandler;
+
         private IReadOnlyCollection<RequestHandler> customHandlers;
         private RequestHandler retryHandler;
 
@@ -38,6 +41,12 @@ namespace Microsoft.Azure.Cosmos
 
             this.diagnosticsHandler = new DiagnosticsHandler();
             Debug.Assert(this.diagnosticsHandler.InnerHandler == null, nameof(this.diagnosticsHandler));
+
+            if (client.ClientOptions.IsTelemetryEnabled)
+            {
+                this.telemetryHandler = new TelemetryHandler(client);
+                Debug.Assert(this.telemetryHandler.InnerHandler == null, nameof(this.telemetryHandler));
+            }
 
             this.UseRetryPolicy();
             this.AddCustomHandlers(customHandlers);

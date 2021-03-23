@@ -34,6 +34,7 @@ namespace Microsoft.Azure.Cosmos.Routing
         private readonly IDocumentClientInternal owner;
         private readonly object refreshLock;
         private readonly AsyncCache<string, AccountProperties> databaseAccountCache;
+
         private int backgroundRefreshLocationTimeIntervalInMS = GlobalEndpointManager.DefaultBackgroundRefreshLocationTimeIntervalInMS;
         private bool isRefreshing;
 
