@@ -925,13 +925,6 @@ namespace Microsoft.Azure.Cosmos
                 desiredConsistencyLevel != null ? desiredConsistencyLevel.ToString() : "null"));
 
             this.QueryCompatibilityMode = QueryCompatibilityMode.Default;
-
-            this.clientTelemetry = new ClientTelemetry(false, Guid.NewGuid().ToString(),
-                System.Diagnostics.Process.GetCurrentProcess().ProcessName,
-                this.ConnectionPolicy.UserAgentContainer.UserAgent,
-                this.ConnectionPolicy.ConnectionMode,
-                null,
-                null, null, this.httpClient, connectionPolicy.EnableClientTelemetry);
         }
 
         // Always called from under the lock except when called from Intilialize method during construction.
@@ -968,6 +961,17 @@ namespace Microsoft.Azure.Cosmos
             {
                 this.InitializeDirectConnectivity(storeClientFactory);
             }
+
+            this.clientTelemetry = new ClientTelemetry(acceleratedNetworking: false,
+                         clientId: Guid.NewGuid().ToString(),
+                         processId: System.Diagnostics.Process.GetCurrentProcess().ProcessName,
+                         userAgent: this.ConnectionPolicy.UserAgentContainer.UserAgent,
+                         connectionMode: this.ConnectionPolicy.ConnectionMode,
+                         globalDatabaseAccountName: this.accountServiceConfiguration.AccountProperties.Id,
+                         applicationRegion: null,
+                         hostEnvInfo: null,
+                         httpClient: this.httpClient,
+                         isClientTelemetryEnabled: this.ConnectionPolicy.EnableClientTelemetry);
         }
 
         private async Task InitializeCachesAsync(string databaseName, DocumentCollection collection, CancellationToken cancellationToken)

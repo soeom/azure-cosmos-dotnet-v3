@@ -10,7 +10,6 @@ namespace Microsoft.Azure.Cosmos.Handler
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using HdrHistogram;
     using Microsoft.Azure.Cosmos.CosmosElements;
     using Newtonsoft.Json.Linq;
 

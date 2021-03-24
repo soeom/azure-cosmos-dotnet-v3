@@ -42,11 +42,8 @@ namespace Microsoft.Azure.Cosmos
             this.diagnosticsHandler = new DiagnosticsHandler();
             Debug.Assert(this.diagnosticsHandler.InnerHandler == null, nameof(this.diagnosticsHandler));
 
-            if (client.ClientOptions.IsTelemetryEnabled)
-            {
-                this.telemetryHandler = new TelemetryHandler(client);
-                Debug.Assert(this.telemetryHandler.InnerHandler == null, nameof(this.telemetryHandler));
-            }
+            this.telemetryHandler = new TelemetryHandler(client);
+            Debug.Assert(this.telemetryHandler.InnerHandler == null, nameof(this.telemetryHandler));
 
             this.UseRetryPolicy();
             this.AddCustomHandlers(customHandlers);
@@ -158,6 +155,9 @@ namespace Microsoft.Azure.Cosmos
             RequestHandler routerHandler = new RouterHandler(
                 documentFeedHandler: feedHandler,
                 pointOperationHandler: this.transportHandler);
+
+            current.InnerHandler = this.telemetryHandler;
+            current = current.InnerHandler;
 
             current.InnerHandler = routerHandler;
             current = current.InnerHandler;

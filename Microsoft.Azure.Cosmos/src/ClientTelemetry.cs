@@ -9,14 +9,18 @@ namespace Microsoft.Azure.Cosmos
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
-    using HdrHistogram;
     using Microsoft.Azure.Cosmos.CosmosElements;
     using Microsoft.Azure.Cosmos.CosmosElements.Telemetry;
+    using Microsoft.Azure.Cosmos.Tracing;
+    using Microsoft.Azure.Documents;
     using Newtonsoft.Json.Linq;
 
     internal class ClientTelemetry
     {
         private readonly ClientTelemetryInfo clientTelemetryInfo;
+
+        private readonly bool isClientTelemetryEnabled;
+        private readonly CosmosHttpClient httpClient;
 
         public ClientTelemetry(Boolean acceleratedNetworking,
                           String clientId,
@@ -31,22 +35,34 @@ namespace Microsoft.Azure.Cosmos
         {
             this.clientTelemetryInfo = new ClientTelemetryInfo(clientId, processId, userAgent, connectionMode,
                 globalDatabaseAccountName, applicationRegion, hostEnvInfo, acceleratedNetworking);
-            Console.Write(httpClient);
-            Console.Write(isClientTelemetryEnabled);
+
+            this.httpClient = httpClient;
+            this.isClientTelemetryEnabled = isClientTelemetryEnabled;
 
         }
 
         private async Task<AzureVMMetadata> LoadAzureVmMetaDataAsync()
         {
-            using HttpClient httpClient = new HttpClient();
-            using HttpRequestMessage httpRequest = new HttpRequestMessage(
-                HttpMethod.Get,
-                "http://169.254.169.254/metadata/instance?api-version=2020-06-01");
-            httpRequest.Headers.Add("Metadata", "true");
-
             try
             {
-                using HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequest);
+                static ValueTask<HttpRequestMessage> CreateRequestMessage()
+                {
+                    HttpRequestMessage request = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = new Uri("http://169.254.169.254/metadata/instance?api-version=2020-06-01")
+                    };
+                    request.Headers.Add("Metadata", "true");
+
+                    return new ValueTask<HttpRequestMessage>(request);
+                }
+                using HttpResponseMessage httpResponseMessage = await this.httpClient.SendHttpAsync(
+                    createRequestMessageAsync: CreateRequestMessage,
+                    resourceType: ResourceType.Unknown,
+                    timeoutPolicy: HttpTimeoutPolicyControlPlaneRead.Instance,
+                    trace: NoOpTrace.Singleton,
+                    cancellationToken: default);
+
                 string jsonVmInfo = await httpResponseMessage.Content.ReadAsStringAsync();
                 AzureVMMetadata azMetadata = JObject.Parse(jsonVmInfo).ToObject<AzureVMMetadata>();
                 Console.WriteLine(azMetadata);
@@ -60,20 +76,9 @@ namespace Microsoft.Azure.Cosmos
             }
         }
 
-        public static void RecordValue(LongHistogram histogram, long value)
-        {
-            try
-            {
-                histogram.RecordValue(value);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public async Task<ResponseMessage> initAsync()
         {
+            //if (this.isClientTelemetryEnabled)
             await this.LoadAzureVmMetaDataAsync();
 
             return new ResponseMessage();
