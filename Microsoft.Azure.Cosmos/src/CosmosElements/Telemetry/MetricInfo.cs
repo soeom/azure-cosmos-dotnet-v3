@@ -10,6 +10,11 @@ namespace Microsoft.Azure.Cosmos.CosmosElements.Telemetry
 
     internal class MetricInfo
     {
+        public MetricInfo(string metricsName, string unitName)
+        {
+            this.metricsName = metricsName;
+            this.unitName = unitName;
+        }
         private String metricsName { get; set; }
         private String unitName { get; set; }
         private double mean { get; set; }

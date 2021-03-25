@@ -7,23 +7,23 @@ namespace Microsoft.Azure.Cosmos.CosmosElements
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using HdrHistogram;
     using Microsoft.Azure.Cosmos.CosmosElements.Telemetry;
 
     internal class ClientTelemetryInfo
     {
-        private string timeStamp { get; set; }
-        private string clientId { get; }
-        private string processId { get; }
-        private string userAgent { get; }
-        private ConnectionMode connectionMode { get; }
-        private string globalDatabaseAccountName { get; }
-        private string applicationRegion { get; }
-        private string hostEnvInfo { get; }
-        private Boolean acceleratedNetworking { get; }
-       /* private IDictionary<ReportPayload, LongHistogram> systemInfoMap { get; set; }
-        private IDictionary<ReportPayload, LongHistogram> cacheRefreshInfoMap { get; set; }
-        private IDictionary<ReportPayload, LongHistogram> operationInfoMap { get; set; }*/
-
+        public string timeStamp { get; set; }
+        public string clientId { get; }
+        public string processId { get; }
+        public string userAgent { get; }
+        public ConnectionMode connectionMode { get; }
+        public string globalDatabaseAccountName { get; }
+        public string applicationRegion { get; }
+        public string hostEnvInfo { get; }
+        public Boolean acceleratedNetworking { get; }
+        public IDictionary<ReportPayload, LongHistogram> systemInfoMap { get; set; }
+        public IDictionary<ReportPayload, LongHistogram> cacheRefreshInfoMap { get; set; }
+        public IDictionary<ReportPayload, LongHistogram> operationInfoMap { get; set; }
         public ClientTelemetryInfo(string clientId,
                                    string processId,
                                    string userAgent,
@@ -41,10 +41,9 @@ namespace Microsoft.Azure.Cosmos.CosmosElements
             this.applicationRegion = applicationRegion;
             this.hostEnvInfo = hostEnvInfo;
             this.acceleratedNetworking = acceleratedNetworking;
-
-           /* this.systemInfoMap = new Dictionary<ReportPayload, LongHistogram>();
+            this.systemInfoMap = new Dictionary<ReportPayload, LongHistogram>();
             this.cacheRefreshInfoMap = new Dictionary<ReportPayload, LongHistogram>();
-            this.operationInfoMap = new Dictionary<ReportPayload, LongHistogram>();*/
+            this.operationInfoMap = new Dictionary<ReportPayload, LongHistogram>();
         }
 
     }

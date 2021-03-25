@@ -9,6 +9,7 @@ namespace Microsoft.Azure.Cosmos
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
+    using HdrHistogram;
     using Microsoft.Azure.Cosmos.CosmosElements;
     using Microsoft.Azure.Cosmos.CosmosElements.Telemetry;
     using Microsoft.Azure.Cosmos.Tracing;
@@ -17,6 +18,14 @@ namespace Microsoft.Azure.Cosmos
 
     internal class ClientTelemetry
     {
+        public const int OneKbToBytes = 1024;
+
+        public const int RequestLatencyMaxMicroSec = 300000000;
+        public const int RequestLatencySuccessPrecision = 4;
+        public const int RequestLatencyFailurePrecision = 2;
+        public const string RequestLatencyName = "RequestLatency";
+        public const string RequestLatencyUnit = "MicroSec";
+
         private readonly ClientTelemetryInfo clientTelemetryInfo;
 
         private readonly bool isClientTelemetryEnabled;
@@ -76,13 +85,84 @@ namespace Microsoft.Azure.Cosmos
             }
         }
 
-        public async Task<ResponseMessage> initAsync()
+        public void Collect(CosmosClient client,
+                                    CosmosDiagnostics cosmosDiagnostics,
+                                    int statusCode,
+                                    int objectSize,
+                                    String containerId,
+                                    String databaseId,
+                                    OperationType operationType,
+                                    ResourceType resourceType,
+                                    Microsoft.Azure.Documents.ConsistencyLevel consistencyLevel,
+                                    float requestCharge)
+        {
+            ReportPayload reportPayloadLatency = 
+                this.CreateReportPayload(
+                    client, 
+                    cosmosDiagnostics,
+                    statusCode, 
+                    objectSize, 
+                    containerId, 
+                    databaseId, 
+                    operationType, 
+                    resourceType, 
+                    consistencyLevel,
+                    RequestLatencyName,
+                    RequestLatencyUnit);
+
+            this.clientTelemetryInfo
+                .operationInfoMap
+                .TryGetValue(reportPayloadLatency, out LongHistogram latencyHistogram);
+            if (latencyHistogram == null)
+            {
+                latencyHistogram = new LongHistogram(RequestLatencyMaxMicroSec, RequestLatencySuccessPrecision);
+            }
+            latencyHistogram.RecordValue((long)cosmosDiagnostics.GetClientElapsedTime().TotalSeconds);
+            this.clientTelemetryInfo.operationInfoMap.Add(reportPayloadLatency, latencyHistogram);
+            
+        }
+
+        private ReportPayload CreateReportPayload(CosmosClient client,
+                                             CosmosDiagnostics cosmosDiagnostics,
+                                             int statusCode,
+                                             int objectSize,
+                                             String containerId,
+                                             String databaseId,
+                                             OperationType operationType,
+                                             ResourceType resourceType,
+                                             Microsoft.Azure.Documents.ConsistencyLevel consistencyLevel,
+                                             String metricsName,
+                                             String unitName)
+        {
+            IReadOnlyList<(string regionName, Uri uri)> regionList = cosmosDiagnostics.GetContactedRegions();
+            IList<Uri> regionUris = new List<Uri>();
+            foreach ((_, Uri uri) in regionList)
+                regionUris.Add(uri);
+
+            ReportPayload reportPayload = new ReportPayload(metricsName, unitName)
+            {
+                regionsContacted = regionUris.ToString(),
+                consistency = consistencyLevel,
+                databaseName = databaseId,
+                containerName = containerId,
+                operation = operationType,
+                resource = resourceType,
+                statusCode = statusCode
+            };
+
+            if (objectSize != 0)
+            {
+                reportPayload.greaterThan1Kb = objectSize > OneKbToBytes;
+            }
+
+            return reportPayload;
+        }
+
+        public async Task<AzureVMMetadata> InitAsync()
         {
             //if (this.isClientTelemetryEnabled)
-            await this.LoadAzureVmMetaDataAsync();
-
-            return new ResponseMessage();
-
+            return await this.LoadAzureVmMetaDataAsync();
         }
+
     }
 }

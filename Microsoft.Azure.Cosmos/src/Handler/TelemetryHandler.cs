@@ -20,14 +20,15 @@ namespace Microsoft.Azure.Cosmos.Handler
         public TelemetryHandler(CosmosClient client)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
-
         }
 
-        public override Task<ResponseMessage> SendAsync(
+        public override async Task<ResponseMessage> SendAsync(
             RequestMessage request,
             CancellationToken cancellationToken)
         {
-           return this.client.DocumentClient.clientTelemetry.initAsync();
+            ResponseMessage message = await base.SendAsync(request, cancellationToken);
+            Console.WriteLine(message);
+            return this.client.DocumentClient.clientTelemetry.Collect(client, message.Diagnostics, );
             
         }
 

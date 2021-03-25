@@ -147,6 +147,9 @@ namespace Microsoft.Azure.Cosmos
             current.InnerHandler = this.retryHandler;
             current = current.InnerHandler;
 
+            current.InnerHandler = this.telemetryHandler;
+            current = current.InnerHandler;
+
             // Have a router handler
             RequestHandler feedHandler = this.CreateDocumentFeedPipeline();
 
@@ -155,9 +158,6 @@ namespace Microsoft.Azure.Cosmos
             RequestHandler routerHandler = new RouterHandler(
                 documentFeedHandler: feedHandler,
                 pointOperationHandler: this.transportHandler);
-
-            current.InnerHandler = this.telemetryHandler;
-            current = current.InnerHandler;
 
             current.InnerHandler = routerHandler;
             current = current.InnerHandler;

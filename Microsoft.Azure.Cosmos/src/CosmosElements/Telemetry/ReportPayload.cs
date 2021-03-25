@@ -11,15 +11,19 @@ namespace Microsoft.Azure.Cosmos.CosmosElements.Telemetry
 
     internal class ReportPayload
     {
-        private String regionsContacted { get; set; }
-        private Boolean greaterThan1Kb { get; set; }
-        private ConsistencyLevel consistency { get; set; }
-        private String databaseName { get; set; }
-        private String containerName { get; set; }
-        private OperationType operation { get; set; }
-        private ResourceType resource { get; set; }
-        private int statusCode { get; set; }
-        private String operationId { get; set; }
-        private MetricInfo metricInfo { get; set; }
+        public string regionsContacted { get; set; }
+        public bool greaterThan1Kb { get; set; }
+        public ConsistencyLevel consistency { get; set; }
+        public string databaseName { get; set; }
+        public string containerName { get; set; }
+        public OperationType operation { get; set; }
+        public ResourceType resource { get; set; }
+        public int statusCode { get; set; }
+        public string operationId { get; set; }
+        public MetricInfo metricInfo { get; set; }
+        public ReportPayload(string metricInfoName, string unitName)
+        {
+            this.metricInfo = new MetricInfo(metricInfoName, unitName);
+        }
     }
 }
