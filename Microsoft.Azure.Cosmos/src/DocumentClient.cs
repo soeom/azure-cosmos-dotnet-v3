@@ -112,7 +112,6 @@ namespace Microsoft.Azure.Cosmos
 
         // Gateway has backoff/retry logic to hide transient errors.
         private RetryPolicy retryPolicy;
-        public ClientTelemetry clientTelemetry { get; set; }
 
         private bool allowOverrideStrongerConsistency = false;
         private int maxConcurrentConnectionOpenRequests = Environment.ProcessorCount * MaxConcurrentConnectionOpenRequestsPerProcessor;
@@ -170,6 +169,7 @@ namespace Microsoft.Azure.Cosmos
         private event EventHandler<SendingRequestEventArgs> sendingRequest;
         private event EventHandler<ReceivedResponseEventArgs> receivedResponse;
         private Func<TransportClient, TransportClient> transportClientHandlerFactory;
+        public ClientTelemetry clientTelemetry { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentClient"/> class using the
@@ -962,18 +962,21 @@ namespace Microsoft.Azure.Cosmos
                 this.InitializeDirectConnectivity(storeClientFactory);
             }
 
-            this.clientTelemetry = new ClientTelemetry(acceleratedNetworking: false,
-                         clientId: Guid.NewGuid().ToString(),
-                         processId: System.Diagnostics.Process.GetCurrentProcess().ProcessName,
-                         userAgent: this.ConnectionPolicy.UserAgentContainer.UserAgent,
-                         connectionMode: this.ConnectionPolicy.ConnectionMode,
-                         globalDatabaseAccountName: this.accountServiceConfiguration.AccountProperties.Id,
-                         applicationRegion: null,
-                         hostEnvInfo: null,
-                         httpClient: this.httpClient,
-                         isClientTelemetryEnabled: this.ConnectionPolicy.EnableClientTelemetry);
+            if (this.ConnectionPolicy.EnableClientTelemetry)
+            {
+                this.clientTelemetry = new ClientTelemetry(acceleratedNetworking: false,
+                        clientId: Guid.NewGuid().ToString(),
+                        processId: System.Diagnostics.Process.GetCurrentProcess().ProcessName,
+                        userAgent: this.ConnectionPolicy.UserAgentContainer.UserAgent,
+                        connectionMode: this.ConnectionPolicy.ConnectionMode,
+                        globalDatabaseAccountName: this.accountServiceConfiguration.AccountProperties.Id,
+                        applicationRegion: null,
+                        hostEnvInfo: null,
+                        httpClient: this.httpClient,
+                        isClientTelemetryEnabled: this.ConnectionPolicy.EnableClientTelemetry);
 
-            await this.clientTelemetry.InitAsync();
+                await this.clientTelemetry.InitAsync();
+            }
         }
 
         private async Task InitializeCachesAsync(string databaseName, DocumentCollection collection, CancellationToken cancellationToken)

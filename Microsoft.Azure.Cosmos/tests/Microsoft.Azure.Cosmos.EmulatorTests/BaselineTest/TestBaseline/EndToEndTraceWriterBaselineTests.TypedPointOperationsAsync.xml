@@ -25,13 +25,14 @@
                 └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                     └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                         └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                            └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                                    (
-                                        [User Agent]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                        [Client Side Request Stats]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                    )
+                            └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                        (
+                                            [User Agent]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                            [Client Side Request Stats]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                        )
 ]]></Text>
       <Json><![CDATA[{
   "name": "CreateItemAsync",
@@ -153,9 +154,9 @@
                           "data": {},
                           "children": [
                             {
-                              "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                              "name": "Send Async",
                               "id": "00000000-0000-0000-0000-000000000000",
-                              "component": "Transport",
+                              "component": "RequestHandler",
                               "caller info": {
                                 "member": "MemberName",
                                 "file": "FilePath",
@@ -163,11 +164,26 @@
                               },
                               "start time": "12:00:00:000",
                               "duration in milliseconds": 0,
-                              "data": {
-                                "User Agent": "Redacted To Not Change The Baselines From Run To Run",
-                                "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
-                              },
-                              "children": []
+                              "data": {},
+                              "children": [
+                                {
+                                  "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                                  "id": "00000000-0000-0000-0000-000000000000",
+                                  "component": "Transport",
+                                  "caller info": {
+                                    "member": "MemberName",
+                                    "file": "FilePath",
+                                    "line": 42
+                                  },
+                                  "start time": "12:00:00:000",
+                                  "duration in milliseconds": 0,
+                                  "data": {
+                                    "User Agent": "Redacted To Not Change The Baselines From Run To Run",
+                                    "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         }
@@ -205,13 +221,14 @@
                 └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                     └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                         └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                            └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                                    (
-                                        [User Agent]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                        [Client Side Request Stats]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                    )
+                            └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                        (
+                                            [User Agent]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                            [Client Side Request Stats]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                        )
 ]]></Text>
       <Json><![CDATA[{
   "name": "ReadItemAsync",
@@ -305,9 +322,9 @@
                           "data": {},
                           "children": [
                             {
-                              "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                              "name": "Send Async",
                               "id": "00000000-0000-0000-0000-000000000000",
-                              "component": "Transport",
+                              "component": "RequestHandler",
                               "caller info": {
                                 "member": "MemberName",
                                 "file": "FilePath",
@@ -315,11 +332,26 @@
                               },
                               "start time": "12:00:00:000",
                               "duration in milliseconds": 0,
-                              "data": {
-                                "User Agent": "Redacted To Not Change The Baselines From Run To Run",
-                                "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
-                              },
-                              "children": []
+                              "data": {},
+                              "children": [
+                                {
+                                  "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                                  "id": "00000000-0000-0000-0000-000000000000",
+                                  "component": "Transport",
+                                  "caller info": {
+                                    "member": "MemberName",
+                                    "file": "FilePath",
+                                    "line": 42
+                                  },
+                                  "start time": "12:00:00:000",
+                                  "duration in milliseconds": 0,
+                                  "data": {
+                                    "User Agent": "Redacted To Not Change The Baselines From Run To Run",
+                                    "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         }
@@ -366,13 +398,14 @@
                 └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                     └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                         └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                            └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                                    (
-                                        [User Agent]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                        [Client Side Request Stats]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                    )
+                            └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                        (
+                                            [User Agent]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                            [Client Side Request Stats]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                        )
 ]]></Text>
       <Json><![CDATA[{
   "name": "ReplaceItemAsync",
@@ -480,9 +513,9 @@
                           "data": {},
                           "children": [
                             {
-                              "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                              "name": "Send Async",
                               "id": "00000000-0000-0000-0000-000000000000",
-                              "component": "Transport",
+                              "component": "RequestHandler",
                               "caller info": {
                                 "member": "MemberName",
                                 "file": "FilePath",
@@ -490,11 +523,26 @@
                               },
                               "start time": "12:00:00:000",
                               "duration in milliseconds": 0,
-                              "data": {
-                                "User Agent": "Redacted To Not Change The Baselines From Run To Run",
-                                "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
-                              },
-                              "children": []
+                              "data": {},
+                              "children": [
+                                {
+                                  "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                                  "id": "00000000-0000-0000-0000-000000000000",
+                                  "component": "Transport",
+                                  "caller info": {
+                                    "member": "MemberName",
+                                    "file": "FilePath",
+                                    "line": 42
+                                  },
+                                  "start time": "12:00:00:000",
+                                  "duration in milliseconds": 0,
+                                  "data": {
+                                    "User Agent": "Redacted To Not Change The Baselines From Run To Run",
+                                    "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         }
@@ -534,13 +582,14 @@
                 └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                     └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
                         └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                            └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
-                                    (
-                                        [User Agent]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                        [Client Side Request Stats]
-                                        Redacted To Not Change The Baselines From Run To Run
-                                    )
+                            └── Send Async(00000000-0000-0000-0000-000000000000)  RequestHandler-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                └── Microsoft.Azure.Documents.ServerStoreModel Transport Request(00000000-0000-0000-0000-000000000000)  Transport-Component  MemberName@FilePath:42  12:00:00:000  0.00 milliseconds  
+                                        (
+                                            [User Agent]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                            [Client Side Request Stats]
+                                            Redacted To Not Change The Baselines From Run To Run
+                                        )
 ]]></Text>
       <Json><![CDATA[{
   "name": "DeleteItemAsync",
@@ -634,9 +683,9 @@
                           "data": {},
                           "children": [
                             {
-                              "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                              "name": "Send Async",
                               "id": "00000000-0000-0000-0000-000000000000",
-                              "component": "Transport",
+                              "component": "RequestHandler",
                               "caller info": {
                                 "member": "MemberName",
                                 "file": "FilePath",
@@ -644,11 +693,26 @@
                               },
                               "start time": "12:00:00:000",
                               "duration in milliseconds": 0,
-                              "data": {
-                                "User Agent": "Redacted To Not Change The Baselines From Run To Run",
-                                "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
-                              },
-                              "children": []
+                              "data": {},
+                              "children": [
+                                {
+                                  "name": "Microsoft.Azure.Documents.ServerStoreModel Transport Request",
+                                  "id": "00000000-0000-0000-0000-000000000000",
+                                  "component": "Transport",
+                                  "caller info": {
+                                    "member": "MemberName",
+                                    "file": "FilePath",
+                                    "line": 42
+                                  },
+                                  "start time": "12:00:00:000",
+                                  "duration in milliseconds": 0,
+                                  "data": {
+                                    "User Agent": "Redacted To Not Change The Baselines From Run To Run",
+                                    "Client Side Request Stats": "Redacted To Not Change The Baselines From Run To Run"
+                                  },
+                                  "children": []
+                                }
+                              ]
                             }
                           ]
                         }

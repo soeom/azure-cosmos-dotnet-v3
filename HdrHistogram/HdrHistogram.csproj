@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Description>HdrHistogram supports low latency recording and analyzing of sampled data value counts across a configurable integer value range with configurable value precision within the range.</Description>
     <Authors>Gil Tene, Lee Campbell</Authors>
     <PackageReleaseNotes>NetStandard 2.0 release</PackageReleaseNotes>
@@ -13,8 +13,8 @@
     <RepositoryUrl>https://github.com/HdrHistogram/HdrHistogram.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
     <DelaySign>true</DelaySign>
+    <AssemblyOriginatorKeyFile>35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">

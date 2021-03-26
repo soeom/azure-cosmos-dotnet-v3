@@ -212,7 +212,7 @@ namespace HdrHistogram
             //NOTE: It would be good if this could expose a DateTimeOffset, however currently that would be misleading, as that level of fidelity is not captured. -LC
 
             //If StartTime was set (#[StartTime:...) use it, else use the first `logTimestampInSec`
-            //This method is odd, in that it only works if the file has been read. That is a bit shit. -LC
+            //This method is odd, in that it only works if the file has been read. That is a bit messy. -LC
 
             //TODO: Create an API that allows GetStartTime to be deterministic (not dependant on how far through ReadHistograms you have enumerated.
 

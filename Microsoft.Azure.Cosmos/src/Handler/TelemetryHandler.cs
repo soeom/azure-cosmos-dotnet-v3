@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
-namespace Microsoft.Azure.Cosmos.Handler
+namespace Microsoft.Azure.Cosmos.Handlers
 {
     using System;
     using System.Collections.Generic;
@@ -29,17 +29,20 @@ namespace Microsoft.Azure.Cosmos.Handler
         {
             ResponseMessage response = await base.SendAsync(request, cancellationToken);
             Console.WriteLine(response);
-            this.client.DocumentClient.clientTelemetry.Collect(
-                response.Diagnostics,
-                response.StatusCode,
-                Marshal.SizeOf(response),
-                null,
-                null,
-                request.OperationType,
-                request.ResourceType,
-                this.client.DocumentClient.ConsistencyLevel,
-                request.Headers.RequestCharge);
-
+            if (this.client.DocumentClient.clientTelemetry != null)
+            {
+               this.client.DocumentClient.clientTelemetry.Collect(
+              response.Diagnostics,
+              response.StatusCode,
+              Marshal.SizeOf(response),
+              null,
+              null,
+              request.OperationType,
+              request.ResourceType,
+              this.client.DocumentClient.ConsistencyLevel,
+              request.Headers.RequestCharge);
+            }
+           
             return response;
             
         }

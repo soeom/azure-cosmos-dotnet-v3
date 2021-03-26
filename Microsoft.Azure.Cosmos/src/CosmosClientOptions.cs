@@ -13,7 +13,7 @@ namespace Microsoft.Azure.Cosmos
     using System.Net.Http;
     using System.Security.AccessControl;
     using Microsoft.Azure.Cosmos.Fluent;
-    using Microsoft.Azure.Cosmos.Handler;
+    using Microsoft.Azure.Cosmos.Handlers;
     using Microsoft.Azure.Documents;
     using Microsoft.Azure.Documents.Client;
     using Newtonsoft.Json;

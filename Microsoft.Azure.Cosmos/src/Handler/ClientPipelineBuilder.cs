@@ -8,7 +8,6 @@ namespace Microsoft.Azure.Cosmos
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using Microsoft.Azure.Cosmos.Handler;
     using Microsoft.Azure.Cosmos.Handlers;
 
     internal class ClientPipelineBuilder
