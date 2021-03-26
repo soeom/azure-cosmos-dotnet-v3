@@ -118,7 +118,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HdrHistogram" Version="2.5.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
@@ -151,6 +150,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\HdrHistogram\HdrHistogram.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="CosmosElements\Numbers\CosmosNumberCodeGenerator.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>CosmosNumberCodeGenerator.cs</LastGenOutput>
@@ -176,6 +179,7 @@
 		<DefineConstants Condition=" '$(DelaySign)' == 'true' ">$(DefineConstants);DelaySignKeys</DefineConstants>
 		<DefineConstants>$(DefineConstants);DOCDBCLIENT;COSMOSCLIENT;NETSTANDARD20</DefineConstants>
 		<LangVersion>8.0</LangVersion>
+		<AssemblyOriginatorKeyFile>..\..\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 </Project>

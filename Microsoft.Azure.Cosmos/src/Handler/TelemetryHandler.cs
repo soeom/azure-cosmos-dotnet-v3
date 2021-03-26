@@ -7,6 +7,7 @@ namespace Microsoft.Azure.Cosmos.Handler
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -26,9 +27,20 @@ namespace Microsoft.Azure.Cosmos.Handler
             RequestMessage request,
             CancellationToken cancellationToken)
         {
-            ResponseMessage message = await base.SendAsync(request, cancellationToken);
-            Console.WriteLine(message);
-            return this.client.DocumentClient.clientTelemetry.Collect(client, message.Diagnostics, );
+            ResponseMessage response = await base.SendAsync(request, cancellationToken);
+            Console.WriteLine(response);
+            this.client.DocumentClient.clientTelemetry.Collect(
+                response.Diagnostics,
+                response.StatusCode,
+                Marshal.SizeOf(response),
+                null,
+                null,
+                request.OperationType,
+                request.ResourceType,
+                this.client.DocumentClient.ConsistencyLevel,
+                request.Headers.RequestCharge);
+
+            return response;
             
         }
 

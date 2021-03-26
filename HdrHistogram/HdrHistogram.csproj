@@ -12,6 +12,9 @@
     <PackageIconUrl>http://hdrhistogram.github.io/HdrHistogram.NET/HdrHistogram-icon-64x64.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/HdrHistogram/HdrHistogram.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>true</DelaySign>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">

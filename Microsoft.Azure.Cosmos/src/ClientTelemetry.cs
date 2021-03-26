@@ -6,6 +6,7 @@ namespace Microsoft.Azure.Cosmos
 {
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
@@ -31,14 +32,14 @@ namespace Microsoft.Azure.Cosmos
         private readonly bool isClientTelemetryEnabled;
         private readonly CosmosHttpClient httpClient;
 
-        public ClientTelemetry(Boolean acceleratedNetworking,
-                          String clientId,
-                          String processId,
-                          String userAgent,
+        public ClientTelemetry(bool acceleratedNetworking,
+                          string clientId,
+                          string processId,
+                          string userAgent,
                           ConnectionMode connectionMode,
-                          String globalDatabaseAccountName,
-                          String applicationRegion,
-                          String hostEnvInfo,
+                          string globalDatabaseAccountName,
+                          string applicationRegion,
+                          string hostEnvInfo,
                           CosmosHttpClient httpClient,
                           bool isClientTelemetryEnabled)
         {
@@ -85,20 +86,19 @@ namespace Microsoft.Azure.Cosmos
             }
         }
 
-        public void Collect(CosmosClient client,
-                                    CosmosDiagnostics cosmosDiagnostics,
-                                    int statusCode,
+        public void Collect(CosmosDiagnostics cosmosDiagnostics,
+                                    HttpStatusCode statusCode,
                                     int objectSize,
                                     String containerId,
                                     String databaseId,
                                     OperationType operationType,
                                     ResourceType resourceType,
                                     Microsoft.Azure.Documents.ConsistencyLevel consistencyLevel,
-                                    float requestCharge)
+                                    double requestCharge)
         {
+            Console.WriteLine(requestCharge);
             ReportPayload reportPayloadLatency = 
                 this.CreateReportPayload(
-                    client, 
                     cosmosDiagnostics,
                     statusCode, 
                     objectSize, 
@@ -119,12 +119,11 @@ namespace Microsoft.Azure.Cosmos
             }
             latencyHistogram.RecordValue((long)cosmosDiagnostics.GetClientElapsedTime().TotalSeconds);
             this.clientTelemetryInfo.operationInfoMap.Add(reportPayloadLatency, latencyHistogram);
-            
         }
 
-        private ReportPayload CreateReportPayload(CosmosClient client,
+        private ReportPayload CreateReportPayload(
                                              CosmosDiagnostics cosmosDiagnostics,
-                                             int statusCode,
+                                             HttpStatusCode statusCode,
                                              int objectSize,
                                              String containerId,
                                              String databaseId,
@@ -147,7 +146,7 @@ namespace Microsoft.Azure.Cosmos
                 containerName = containerId,
                 operation = operationType,
                 resource = resourceType,
-                statusCode = statusCode
+                statusCode = (int)statusCode
             };
 
             if (objectSize != 0)
