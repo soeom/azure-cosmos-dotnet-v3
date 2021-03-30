@@ -521,6 +521,12 @@ namespace Microsoft.Azure.Cosmos.Fluent
             return this;
         }
 
+        internal CosmosClientBuilder WithTelemetryEnabled()
+        {
+            this.clientOptions.EnableClientTelemetry = true;
+            return this;
+        }
+
         internal CosmosClientBuilder WithRetryWithOptions(
             int? initialRetryForRetryWithMilliseconds,
             int? maximumRetryForRetryWithMilliseconds,

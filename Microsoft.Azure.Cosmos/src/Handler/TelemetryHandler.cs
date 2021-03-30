@@ -28,10 +28,10 @@ namespace Microsoft.Azure.Cosmos.Handlers
             CancellationToken cancellationToken)
         {
             ResponseMessage response = await base.SendAsync(request, cancellationToken);
-            Console.WriteLine(response);
             if (this.client.DocumentClient.clientTelemetry != null)
             {
-               this.client.DocumentClient.clientTelemetry.Collect(
+              this.client.DocumentClient.clientTelemetry.Collect(
+              this.client,
               response.Diagnostics,
               response.StatusCode,
               Marshal.SizeOf(response),

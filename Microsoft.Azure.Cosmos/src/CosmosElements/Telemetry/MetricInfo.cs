@@ -15,12 +15,12 @@ namespace Microsoft.Azure.Cosmos.CosmosElements.Telemetry
             this.metricsName = metricsName;
             this.unitName = unitName;
         }
-        private String metricsName { get; set; }
-        private String unitName { get; set; }
-        private double mean { get; set; }
-        private long count { get; set; }
-        private double min { get; set; }
-        private double max { get; set; }
-        private IDictionary<Double, Double> percentiles { get; set; }
+        internal String metricsName { get; set; }
+        internal String unitName { get; set; }
+        internal double mean { get; set; }
+        internal long count { get; set; }
+        internal double min { get; set; }
+        internal double max { get; set; }
+        internal IDictionary<Double, Double> percentiles { get; set; }
     }
 }

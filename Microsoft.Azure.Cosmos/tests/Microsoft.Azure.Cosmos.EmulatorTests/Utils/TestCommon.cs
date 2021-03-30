@@ -84,7 +84,7 @@ namespace Microsoft.Azure.Cosmos.SDK.EmulatorTests
             return clientBuilder;
         }
 
-        internal static CosmosClient CreateCosmosClient(Action<CosmosClientBuilder> customizeClientBuilder = null, bool useCustomSeralizer = true)
+        internal static CosmosClient CreateCosmosClient(Action<CosmosClientBuilder> customizeClientBuilder = null, bool useCustomSeralizer = true, bool isTelemetryEnabled=false)
         {
             CosmosClientBuilder cosmosClientBuilder = GetDefaultConfiguration(useCustomSeralizer);
             if (customizeClientBuilder != null)
